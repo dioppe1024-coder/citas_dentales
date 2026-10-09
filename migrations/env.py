@@ -5,26 +5,27 @@ from flask import current_app
 
 from alembic import context
 
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
+# Objeto de configuración de Alembic. Da acceso a todo lo que está en alembic.ini
 config = context.config
 
-# Interpret the config file for Python logging.
-# This line sets up loggers basically.
+# Activamos los logs usando el archivo de configuración (alembic.ini).
+# Esto nos permite ver en consola qué está haciendo Alembic en cada momento.
 fileConfig(config.config_file_name)
 logger = logging.getLogger('alembic.env')
 
 
 def get_engine():
     try:
-        # this works with Flask-SQLAlchemy<3 and Alchemical
+        # Para versiones anteriores de Flask-SQLAlchemy (menor a 3)
         return current_app.extensions['migrate'].db.get_engine()
     except (TypeError, AttributeError):
-        # this works with Flask-SQLAlchemy>=3
+        # Para Flask-SQLAlchemy 3 en adelante
         return current_app.extensions['migrate'].db.engine
 
 
 def get_engine_url():
+    # Obtenemos la URL de conexión a la base de datos.
+    # El %% es necesario porque Alembic usa % como carácter especial en su config.
     try:
         return get_engine().url.render_as_string(hide_password=False).replace(
             '%', '%%')
@@ -32,36 +33,28 @@ def get_engine_url():
         return str(get_engine().url).replace('%', '%%')
 
 
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
+# Le decimos a Alembic cuál es la URL de la base de datos (la saca de Flask)
+# y también le pasamos los metadatos de nuestros modelos para que pueda
+# detectar automáticamente los cambios cuando hacemos "flask db migrate"
 config.set_main_option('sqlalchemy.url', get_engine_url())
 target_db = current_app.extensions['migrate'].db
 
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
-# ... etc.
-
 
 def get_metadata():
+    # Retorna los metadatos de la base de datos (estructura de tablas y columnas).
+    # En proyectos con múltiples bases de datos hay varios metadatos; aquí solo hay uno.
     if hasattr(target_db, 'metadatas'):
         return target_db.metadatas[None]
     return target_db.metadata
 
 
 def run_migrations_offline():
-    """Run migrations in 'offline' mode.
+    """
+    Ejecuta las migraciones en modo 'offline' (sin conexión activa a la BD).
 
-    This configures the context with just a URL
-    and not an Engine, though an Engine is acceptable
-    here as well.  By skipping the Engine creation
-    we don't even need a DBAPI to be available.
-
-    Calls to context.execute() here emit the given string to the
-    script output.
-
+    En este modo Alembic solo genera el SQL que se debería ejecutar,
+    sin conectarse realmente. Útil para revisar qué cambios se harían
+    antes de aplicarlos, o cuando no tienes acceso directo a la base de datos.
     """
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
@@ -73,22 +66,22 @@ def run_migrations_offline():
 
 
 def run_migrations_online():
-    """Run migrations in 'online' mode.
+    """
+    Ejecuta las migraciones en modo 'online' (con conexión activa a la BD).
 
-    In this scenario we need to create an Engine
-    and associate a connection with the context.
-
+    Este es el modo normal cuando corremos "flask db upgrade".
+    Alembic se conecta a la base de datos y aplica los cambios directamente.
     """
 
-    # this callback is used to prevent an auto-migration from being generated
-    # when there are no changes to the schema
-    # reference: http://alembic.zzzcomputing.com/en/latest/cookbook.html
     def process_revision_directives(context, revision, directives):
+        # Si hacemos "flask db migrate" y no hay cambios en los modelos,
+        # Alembic no genera un archivo de migración vacío. Simplemente avisa
+        # que no detectó cambios. Evita tener archivos de migración inútiles.
         if getattr(config.cmd_opts, 'autogenerate', False):
             script = directives[0]
             if script.upgrade_ops.is_empty():
                 directives[:] = []
-                logger.info('No changes in schema detected.')
+                logger.info('No se detectaron cambios en el esquema.')
 
     conf_args = current_app.extensions['migrate'].configure_args
     if conf_args.get("process_revision_directives") is None:
@@ -107,6 +100,8 @@ def run_migrations_online():
             context.run_migrations()
 
 
+# Punto de entrada: dependiendo del modo en que corre Alembic,
+# ejecuta las migraciones online u offline
 if context.is_offline_mode():
     run_migrations_offline()
 else:
