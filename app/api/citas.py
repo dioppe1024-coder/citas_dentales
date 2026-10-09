@@ -13,10 +13,10 @@ ZONA_HORARIA = ZoneInfo('America/Lima')
 
 
 def validarReglasCita(data, citaId=None):
-    """
-    Valida las reglas de negocio de una cita. Retorna un mensaje de error o None si todo esta bien.
-    citaId se usa al actualizar para no compararse consigo misma.
-    """
+    
+    #Valida las reglas de negocio de una cita. Retorna un mensaje de error o None si todo esta bien.
+    #citaId se usa al actualizar para no compararse consigo misma.
+    
     paciente = db.session.query(Paciente).with_entities(Paciente.id).filter(
         Paciente.id == data.pacienteId, Paciente.eliminado == False).first()
     if not paciente:
