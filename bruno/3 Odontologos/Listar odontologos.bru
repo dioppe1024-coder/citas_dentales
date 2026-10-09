@@ -1,0 +1,19 @@
+meta {
+  name: Listar odontologos
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/odontologos?
+  body: none
+  auth: bearer
+}
+
+params:query {
+  ~especialidad: ortodoncia
+}
+
+auth:bearer {
+  token: {{token}}
+}

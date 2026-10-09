@@ -1,0 +1,21 @@
+meta {
+  name: Listar pacientes
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/pacientes?page=1&perPage=10
+  body: none
+  auth: bearer
+}
+
+params:query {
+  page: 1
+  perPage: 10
+  ~buscar: lopez
+}
+
+auth:bearer {
+  token: {{token}}
+}

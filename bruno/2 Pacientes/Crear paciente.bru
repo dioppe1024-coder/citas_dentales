@@ -1,0 +1,26 @@
+meta {
+  name: Crear paciente
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/pacientes
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "nombre": "Maria",
+    "apellidos": "Lopez Quispe",
+    "dni": "45678912",
+    "telefono": "987654321",
+    "correo": "maria@gmail.com",
+    "fechaNacimiento": "1990-05-21"
+  }
+}

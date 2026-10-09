@@ -1,0 +1,29 @@
+meta {
+  name: Crear cita
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/citas
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "fecha": "2027-01-15",
+    "hora": "09:30",
+    "motivo": "Limpieza dental",
+    "pacienteId": 1,
+    "odontologoId": 1
+  }
+}
+
+docs {
+  Reglas: fecha/hora futura, horario 08:00-20:00, sin cruce de horario para el odontologo ni para el paciente.
+}

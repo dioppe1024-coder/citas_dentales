@@ -1,0 +1,26 @@
+meta {
+  name: Actualizar paciente
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/paciente/1
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "nombre": "Maria",
+    "apellidos": "Lopez Quispe",
+    "dni": "45678912",
+    "telefono": "912345678",
+    "correo": "maria@gmail.com",
+    "fechaNacimiento": "1990-05-21"
+  }
+}

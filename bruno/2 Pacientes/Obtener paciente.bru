@@ -1,0 +1,19 @@
+meta {
+  name: Obtener paciente
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/paciente/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Devuelve el paciente con su historial de citas.
+}

@@ -1,0 +1,19 @@
+meta {
+  name: Eliminar paciente
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/paciente/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Eliminacion suave. No se permite si el paciente tiene citas PROGRAMADAS.
+}

@@ -1,0 +1,25 @@
+meta {
+  name: Crear odontologo
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/odontologos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "nombre": "Carlos",
+    "apellidos": "Ramirez Torres",
+    "cop": "COP12345",
+    "especialidad": "Ortodoncia",
+    "telefono": "987111222"
+  }
+}

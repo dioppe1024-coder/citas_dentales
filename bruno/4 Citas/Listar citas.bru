@@ -1,0 +1,24 @@
+meta {
+  name: Listar citas
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/citas?page=1&perPage=10
+  body: none
+  auth: bearer
+}
+
+params:query {
+  page: 1
+  perPage: 10
+  ~fecha: 2027-01-15
+  ~odontologoId: 1
+  ~pacienteId: 1
+  ~estado: PROGRAMADA
+}
+
+auth:bearer {
+  token: {{token}}
+}

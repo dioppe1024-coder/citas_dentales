@@ -1,0 +1,19 @@
+meta {
+  name: Cancelar cita
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{baseUrl}}/cita/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  No borra la cita, cambia su estado a CANCELADA.
+}

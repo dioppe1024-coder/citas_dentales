@@ -1,0 +1,25 @@
+meta {
+  name: Reprogramar cita
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/cita/1
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "fecha": "2027-01-16",
+    "hora": "11:00",
+    "motivo": "Limpieza dental",
+    "pacienteId": 1,
+    "odontologoId": 1
+  }
+}
